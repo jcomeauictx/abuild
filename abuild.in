@@ -12,6 +12,7 @@ program_version=@VERSION@
 sharedir=${ABUILD_SHAREDIR:-@sharedir@}
 
 abuild_path=$(readlink -f $0)
+bindir=$(dirname $abuild_path)
 
 : ${git:=$(command -v git || echo true)}
 export git
@@ -19,7 +20,7 @@ export git
 if ! [ -f "$sharedir/functions.sh" ]; then
 	# assume running from git cloned repository;
 	# will fail in next step if functions.sh doesn't exist there.
-	sharedir=$(dirname $abuild_path)
+	sharedir=$bindir
 fi
 . "$sharedir/functions.sh"
 
@@ -421,7 +422,7 @@ sourcecheck() {
 uri_fetch() {
 	local uri="$1"
 	msg "Fetching $uri"
-	abuild-fetch -d "$SRCDEST" "$uri"
+	$bindir/abuild-fetch -d "$SRCDEST" "$uri"
 }
 
 is_remote() {
