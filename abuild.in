@@ -22,7 +22,6 @@ if [ -z "$BB_ASH_VERSION" ]; then
 fi
 program_version=@VERSION@
 sharedir=${ABUILD_SHAREDIR:-@sharedir@}
-
 abuild_path=$(readlink -f $0)
 bindir=$(dirname $abuild_path)
 
@@ -1906,7 +1905,7 @@ create_apks() {
 		cd "$dir"
 		apk_tar -T - < .metafiles | abuild-tar --cut \
 			| $gzip -n -9 > control.tar.gz
-		abuild-sign -q control.tar.gz || exit 1
+		$bindir/abuild-sign -q control.tar.gz || exit 1
 
 		msg "Create $apk"
 		mkdir -p "$REPODEST/$repo/$(arch2dir "$subpkgarch")"
@@ -1925,7 +1924,7 @@ build_abuildrepo() {
 	fi
 	if ! apk_up2date || [ -n "$force" ]; then
 		# check early if we have abuild key
-		abuild-sign --installed
+		$bindir/abuild-sign --installed
 		logcmd "building $repo/$pkgname-$pkgver-r$pkgrel"
 		_starttime=$(date -u +%s)
 		msg "Building $repo/$pkgname $pkgver-r$pkgrel (using $program $program_version) started $(date -R)"
@@ -1975,7 +1974,7 @@ update_abuildrepo_index() {
 		( $APK index $ABUILD_APK_INDEX_OPTS --no-warnings --quiet $oldindex --output APKINDEX.tar.gz.$$ \
 			--description "$DESCRIPTION" --rewrite-arch $i *.apk && \
 		  msg "Signing the index..." && \
-		  abuild-sign -q APKINDEX.tar.gz.$$ && \
+		  $bindir/abuild-sign -q APKINDEX.tar.gz.$$ && \
 		  chmod 644 APKINDEX.tar.gz.$$ && \
 		  mv APKINDEX.tar.gz.$$ APKINDEX.tar.gz \
 		) || (rm -f APKINDEX.tar.gz.$$ ; die "Failed to create index")
@@ -2554,7 +2553,7 @@ rootbld() {
 	logcmd "chroot building building $repo/$pkgname-$pkgver-r$pkgrel"
 
 	# check early if we have abuild key
-	abuild-sign --installed
+	$bindir/abuild-sign --installed
 
 	# make sure SOURCE_DATE_EPOCH is set
 	set_source_date
