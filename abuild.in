@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/ash -e
 # vim: set filetype=sh:
 
 # abuild - build apk packages (light version of makepkg)
@@ -20,7 +20,6 @@ if [ -z "$BB_ASH_VERSION" ]; then
 		exec bash $shellflags $0 "$@"
 	fi
 fi
-set -e  # now turn on error abort
 program_version=@VERSION@
 sharedir=${ABUILD_SHAREDIR:-@sharedir@}
 
