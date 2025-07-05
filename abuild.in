@@ -17,8 +17,9 @@ abuild_path=$(readlink -f $0)
 export git
 
 if ! [ -f "$sharedir/functions.sh" ]; then
-	echo "$sharedir/functions.sh: not found" >&2
-	exit 1
+	# assume running from git cloned repository;
+	# will fail in next step if functions.sh doesn't exist there.
+	sharedir=$(dirname $abuild_path)
 fi
 . "$sharedir/functions.sh"
 
